@@ -126,6 +126,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "fastapi" },
+    { name = "mypy" },
     { name = "opencv-python" },
     { name = "pyzbar" },
 ]
@@ -140,6 +141,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", specifier = ">=0.139.0" },
+    { name = "mypy", specifier = ">=2.1.0" },
     { name = "opencv-python", specifier = ">=5.0.0.93" },
     { name = "pyzbar", specifier = ">=0.1.9" },
 ]

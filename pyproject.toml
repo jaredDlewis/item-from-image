@@ -4,6 +4,7 @@ version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi>=0.139.0",
+    "mypy>=2.1.0",
     "opencv-python>=5.0.0.93",
     "pyzbar>=0.1.9",
 ]
@@ -18,3 +19,7 @@ dev = [
 
 [tool.uv]
 package = false
+
+[tool.mypy]
+python_version = "3.13"
+mypy_path = "stubs"
