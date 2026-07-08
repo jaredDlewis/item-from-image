@@ -1,0 +1,8 @@
+## High Level Architecture
+- Stage 0 — Preprocess (free, local). Crop to the tag and downscale. This improves OCR accuracy and, critically, shrinks the image if anything paid runs later — image tokens are what make VLMs expensive.
+
+- Stage 1 — Identity via barcode (free, deterministic, and more accurate than a VLM). Detect and decode the barcode locally with pyzbar/ZBar or OpenCV, then look it up in Open Food Facts. It's free with no API key and no rate limiting for reasonable use, and the data is open under the ODbL licence. A call is just GET https://world.openfoodfacts.org/api/v2/product/{barcode}.json, returning product name, brand, and category — which map cleanly onto your name and description. A barcode lookup beats VLM guessing every time, because it's an exact match rather than an inference.
+
+- Stage 2 — Text extraction via OCR (free, local). Run PaddleOCR, EasyOCR, or docTR on the cropped tag to get raw text. The price fields aren't in any product database — they're store-specific — so they must come off the label here.
+- Stage 3 — Parse pricing with regex (free). The numeric fields are highly regular, which is exactly what regex is good at: currency symbol/code, \$?\d+\.\d{2} for price, and /lb, per oz, ¢/oz patterns for pricePerUnit. No model needed.
+- Stage 4 — Escalate only on failure. If the barcode is missing and OCR came back garbage (blurry photo, handwritten tag), then send the cropped image to a VLM. Because this is the exception, your average cost stays near zero. If you just need to clean up a messy OCR'd product name, escalate to a small text-only model first — text tokens are far cheaper than image tokens.
